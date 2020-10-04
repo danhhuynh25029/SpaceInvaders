@@ -1,7 +1,9 @@
 import pygame
+from pygame import mixer
 import sys
 import random
 pygame.font.init()
+pygame.mixer.init()
 win = pygame.display.set_mode((450,600))
 pygame.display.set_caption("Game air")
 clock = pygame.time.Clock()
@@ -10,6 +12,8 @@ player = pygame.image.load('images/player.png')
 b_image = pygame.image.load('images/bullet.png')
 bot_image = pygame.image.load('images/bot.png')
 ex_image = pygame.image.load('images/no.png')
+mixer.music.load('soundstrack/background.wav')
+mixer.music.play(-1)
 class Player(object):
    def __init__(self,x,y,health,score,image,end):
       self.x = x
@@ -36,10 +40,15 @@ class Bullet(object):
       self.y = y
       self.image = image
       self.run = False
+      self.music = True
    def Draw(self):
       if self.run == True:
          self.y += -20
       win.blit(self.image,(self.x,self.y))
+      if self.music == True:
+         mixer.music.load('soundstrack/laser.wav')
+         mixer.music.play(-1)
+         self.music = False
 class Bot(object):
    def __init__(self,x,y,image,death,tmp):
       self.x = x
@@ -58,9 +67,14 @@ class explosive(object):
       self.y = y
       self.image = image
       self.run = run
+      self.music = True
    def Draw(self):
       if self.run == True:
          win.blit(self.image,(self.x,self.y))
+      if self.music == True:
+         mixer.music.load('soundstrack/explosion.wav')
+         mixer.music.play(-1)
+         self.music = False
 p = Player(170,500,100,0,player,False)      
 arr_b = []
 arr_bot = []
@@ -81,7 +95,6 @@ def drawGame():
          p.end = True
       if i.death == True:
          arr_bot.pop(arr_bot.index(i))
-      if 
    if len(arr_bot) < 5:
       x = random.randint(0,350)
       tmp = random.randint(1,10)
