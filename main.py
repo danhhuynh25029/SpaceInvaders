@@ -12,8 +12,8 @@ player = pygame.image.load('images/player.png')
 b_image = pygame.image.load('images/bullet.png')
 bot_image = pygame.image.load('images/bot.png')
 ex_image = pygame.image.load('images/no.png')
-mixer.music.load('soundstrack/background.wav')
-mixer.music.play(-1)
+sound = mixer.Sound('soundstrack/background.wav')
+sound.play(-1)
 class Player(object):
    def __init__(self,x,y,health,score,image,end):
       self.x = x
@@ -47,7 +47,7 @@ class Bullet(object):
       win.blit(self.image,(self.x,self.y))
       if self.music == True:
          mixer.music.load('soundstrack/laser.wav')
-         mixer.music.play(-1)
+         mixer.music.play()
          self.music = False
 class Bot(object):
    def __init__(self,x,y,image,death,tmp):
@@ -73,7 +73,7 @@ class explosive(object):
          win.blit(self.image,(self.x,self.y))
       if self.music == True:
          mixer.music.load('soundstrack/explosion.wav')
-         mixer.music.play(-1)
+         mixer.music.play()
          self.music = False
 p = Player(170,500,100,0,player,False)      
 arr_b = []
@@ -123,10 +123,6 @@ def drawGame():
          arr_b.pop(arr_b.index(i))
       if i.run == True:
          i.Draw()
-   #print(len(arr_b))
-
-   #print(len(arr_bot))
-   #print(len(arr_b))
    drawScore(p.score)
 def Pause():
    pause = False
@@ -141,24 +137,28 @@ def Pause():
          win.blit(scoretext, (450//2 - 70,600//2 ))
          win.blit(alert,(450//2 - 90,450))
          pygame.display.update()
-         clock.tick(5)
+         clock.tick(0)
          if e.type == pygame.KEYDOWN:
             if e.key == pygame.K_c:
                pause = False
                p.score = 0
                p.end = False
                arr_bot.clear()
-run = True
-while run:
-   clock.tick(27)
-   for e in pygame.event.get():
-      if e.type == pygame.QUIT:
-         run = False
-      if e.type == pygame.K_c:
-         p.end = False
-         p.score = 0
-         arr_bot.clear()
-   drawGame()
-   Pause()
-   pygame.display.update()
-pygame.quit()
+
+def RunGame():
+   run = True
+   while run:
+      clock.tick(27)
+      for e in pygame.event.get():
+         if e.type == pygame.QUIT:
+            run = False
+         if e.type == pygame.K_c:
+            p.end = False
+            p.score = 0
+            arr_bot.clear()
+      drawGame()
+      Pause()
+      pygame.display.update()
+   pygame.quit()
+if __name__ == "__main__":
+   RunGame()
