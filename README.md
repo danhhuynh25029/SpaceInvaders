@@ -1,4 +1,4 @@
 # SpaceInvaders
 
-How to install
+* How to install
 <pre>pip install -r requirements.txt</pre>
