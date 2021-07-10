@@ -2,6 +2,7 @@ import pygame
 from pygame import mixer
 import sys
 import random
+import pygame_menu
 pygame.font.init()
 pygame.mixer.init()
 win = pygame.display.set_mode((450,600))
@@ -14,6 +15,7 @@ bot_image = pygame.image.load('images/bot.png')
 ex_image = pygame.image.load('images/no.png')
 sound = mixer.Sound('soundstrack/background.wav')
 sound.play(-1)
+pause = False
 class Player(object):
    def __init__(self,x,y,health,score,image,end):
       self.x = x
@@ -124,28 +126,10 @@ def drawGame():
       if i.run == True:
          i.Draw()
    drawScore(p.score)
-def Pause():
-   pause = False
-   if p.end == True:
-      pause = True
-   while pause:
-      for e in pygame.event.get():
-         win.fill((255,255,255))
-         myfont = pygame.font.SysFont("Times New Roman,Arial", 20,True)
-         scoretext = myfont.render(" Your Score: "+str(p.score), 1, (0,0,0))
-         alert = myfont.render("Press c to countinue",1,(0,0,0))
-         win.blit(scoretext, (450//2 - 70,600//2 ))
-         win.blit(alert,(450//2 - 90,450))
-         pygame.display.update()
-         clock.tick(0)
-         if e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_c:
-               pause = False
-               p.score = 0
-               p.end = False
-               arr_bot.clear()
 
 def RunGame():
+   pygame.display.update()
+   win = pygame.display.set_mode((450,600))
    run = True
    while run:
       clock.tick(27)
@@ -160,5 +144,34 @@ def RunGame():
       Pause()
       pygame.display.update()
    pygame.quit()
+def Pause():
+   global pause
+   if p.end == True:
+      pause = True 
+   if pause == True:
+      showContinue()
+def showContinue():
+   pygame.init()
+   surface = pygame.display.set_mode((450, 600))
+   menu = pygame_menu.Menu(" Your Score: "+str(p.score), 450, 600,theme=pygame_menu.themes.THEME_BLUE)
+   menu.add.button('Continue',Continue)
+   menu.add.button('Exit',pygame_menu.events.EXIT)
+   menu.mainloop(surface)
+def Continue():
+    global pause
+    pygame.display.update()
+    pause = False
+    p.score = 0
+    p.end = False
+    arr_bot.clear()
+    RunGame()
+def loadMenu():
+    pygame.init()
+    surface = pygame.display.set_mode((450,600))
+    menu = pygame_menu.Menu('SpaceInvader',450,600,theme=pygame_menu.themes.THEME_BLUE)
+    menu.add.button("Play",RunGame)
+    menu.add.button("Exit",pygame_menu.events.EXIT)
+    menu.mainloop(surface)
 if __name__ == "__main__":
-   RunGame()
+    loadMenu()
+    #RunGame()
